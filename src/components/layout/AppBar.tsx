@@ -29,7 +29,7 @@ export default function AppBar() {
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     closeMenu();
-    router.refresh()
+    window.location.reload();
   }
 
   const openMenu = (event: React.MouseEvent<HTMLElement>) => {

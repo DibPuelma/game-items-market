@@ -33,12 +33,12 @@ export default function SignUpDialog({ open, onClose }: { open: boolean, onClose
         },
       })
       setSignUpQuery({ success: true })
+      window.location.reload();
     } catch (error) {
       setSignUpQuery({ error: true })
     } finally {
       setSignUpQuery((oldValue) => ({ ...oldValue, loading: false }))
     }
-    router.refresh()
   }
   return (
     <Dialog open={open} onClose={onClose}>

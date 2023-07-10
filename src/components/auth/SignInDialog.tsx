@@ -29,8 +29,8 @@ export default function SignInDialog({ open, onClose }: { open: boolean, onClose
         email,
         password,
       })
-      router.refresh()
       onClose();
+      window.location.reload();
     } catch (error) {
       setSignInQuery({ error: true })
     } finally {
