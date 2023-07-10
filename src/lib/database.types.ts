@@ -18,7 +18,7 @@ export interface Database {
           id: number
           image_url: string | null
           name: string | null
-          second_attirbute_name: string | null
+          second_attribute_name: string | null
           second_attribute_value: number | null
           updated_at: string | null
           user_id: string | null
@@ -31,7 +31,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           name?: string | null
-          second_attirbute_name?: string | null
+          second_attribute_name?: string | null
           second_attribute_value?: number | null
           updated_at?: string | null
           user_id?: string | null
@@ -44,7 +44,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           name?: string | null
-          second_attirbute_name?: string | null
+          second_attribute_name?: string | null
           second_attribute_value?: number | null
           updated_at?: string | null
           user_id?: string | null
