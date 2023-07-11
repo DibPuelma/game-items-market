@@ -7,7 +7,7 @@ import useSupabase from "../hooks/useSupabase";
 import { LoadingButton } from "@mui/lab";
 import useQueryStatus from "../hooks/useQueryStatus";
 
-type UserData = {
+type UserProfile = {
   full_name?: string | null,
   discord_id?: string | null,
 }
@@ -16,7 +16,7 @@ export default function Profile() {
   const supabase = useSupabase()
   const { user } = useSession()
   const [loading, setLoading] = useState<boolean>(true)
-  const [userData, setUserData] = useState<UserData | null>({
+  const [userProfile, setUserProfile] = useState<UserProfile | null>({
     full_name: '',
     discord_id: '',
   });
@@ -25,7 +25,7 @@ export default function Profile() {
   useEffect(() => {
     const getUserProfile = async () => {
       const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      setUserData(profile)
+      setUserProfile(profile)
       setLoading(false)
     }
     if (!user) return
@@ -33,12 +33,12 @@ export default function Profile() {
   }, [user, supabase])
 
   const handleSaveProfile = async () => {
-    if (!userData?.discord_id) return;
+    if (!userProfile?.discord_id) return;
     changeStatusAttribute('loading', true)
     try {
       const { error } = await supabase.from('profiles').update({
-        full_name: userData?.full_name,
-        discord_id: userData?.discord_id,
+        full_name: userProfile?.full_name,
+        discord_id: userProfile?.discord_id,
       }).eq('id', user.id)
       if (error) changeStatusAttribute('error', true)
       else changeStatusAttribute('success', true)
@@ -59,14 +59,14 @@ export default function Profile() {
           <TextField
             label="Full name"
             variant="outlined"
-            value={userData?.full_name}
-            onChange={(e) => setUserData((oldValue) => ({ ...oldValue, full_name: e.target.value }))}
+            value={userProfile?.full_name}
+            onChange={(e) => setUserProfile((oldValue) => ({ ...oldValue, full_name: e.target.value }))}
           />
           <TextField
             label="Discord ID"
             variant="outlined"
-            value={userData?.discord_id}
-            onChange={(e) => setUserData((oldValue) => ({ ...oldValue, discord_id: e.target.value }))}
+            value={userProfile?.discord_id}
+            onChange={(e) => setUserProfile((oldValue) => ({ ...oldValue, discord_id: e.target.value }))}
           />
           {status.success && (
             <Typography variant="body1" color="success.main">Profile saved!</Typography>

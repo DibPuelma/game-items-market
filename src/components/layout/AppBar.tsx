@@ -102,12 +102,17 @@ export default function AppBar() {
                   open={Boolean(anchorEl)}
                   onClose={closeMenu}
                 >
-                  <MenuItem>{user.email}</MenuItem>
-                  <MenuItem>
-                    <Link className="no-link-style" href="/profile">
+                  <MenuItem disabled>{user.email}</MenuItem>
+                  <Link className="no-link-style" href="/my-items">
+                    <MenuItem>
+                      My items
+                    </MenuItem>
+                  </Link>
+                  <Link className="no-link-style" href="/profile">
+                    <MenuItem>
                       Profile
-                    </Link>
-                  </MenuItem>
+                    </MenuItem>
+                  </Link>
                   <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
                 </Menu>
               </>
