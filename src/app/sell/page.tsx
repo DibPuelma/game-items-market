@@ -88,13 +88,14 @@ const RARE_SUB_TYPES = [
 const BASE_ITEM = {
   name: '',
   firstAttributeName: '',
-  firstAttributeValue: null,
+  firstAttributeValue: undefined,
   secondAttributeName: '',
-  secondAttributeValue: null,
+  secondAttributeValue: undefined,
   image_url: null,
   gender: '',
   type: '',
   subType: '',
+  price: undefined,
 }
 
 
@@ -134,6 +135,7 @@ export default function SellPage() {
       setItemData({
         ...BASE_ITEM,
         name: itemData.name,
+        price: itemData.price,
         [event.target.name]: event.target.value,
       });
       return;
@@ -174,11 +176,13 @@ export default function SellPage() {
     try {
       setCreateResolved((oldValue) => ({ ...oldValue, loading: true }));
       const snakeCaseItem = _.mapKeys(itemData, (_value, key) => _.snakeCase(key))
-      await supabase.from('helbreath_items').insert({ ...snakeCaseItem, user_id: user.id })
+      const { error } = await supabase.from('helbreath_items').insert({ ...snakeCaseItem, user_id: user.id })
+      if (error) {
+        setCreateResolved((oldValue) => ({ ...oldValue, error: true }));
+        return;
+      }
       setCreateResolved((oldValue) => ({ ...oldValue, success: true }));
       setItemData(BASE_ITEM)
-    } catch {
-      setCreateResolved((oldValue) => ({ ...oldValue, error: true }));
     } finally {
       setCreateResolved((oldValue) => ({ ...oldValue, loading: false }));
     }
@@ -226,7 +230,8 @@ export default function SellPage() {
     <Container maxWidth="lg" sx={{ pt: 4 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom>What would you like to sell?</Typography>
+          <Typography variant="h4">What would you like to sell?</Typography>
+          <Typography gutterBottom>Prices are in Olympia Coins</Typography>
           {createResolved.error && (
             <Typography variant="body1" color="error" sx={(theme) => ({ color: theme.palette.error.main })}>
               There was an error creating your item. Please try again.
@@ -238,13 +243,24 @@ export default function SellPage() {
             </Typography>
           )}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={9} sm={10}>
           <TextField
             fullWidth
             label="Item name"
             variant="outlined"
             value={itemData.name}
             name="name"
+            onChange={handleTextChange}
+          />
+        </Grid>
+        <Grid item xs={3} sm={2}>
+          <TextField
+            fullWidth
+            label="Price"
+            variant="outlined"
+            type="number"
+            value={itemData.price}
+            name="price"
             onChange={handleTextChange}
           />
         </Grid>
