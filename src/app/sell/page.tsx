@@ -282,24 +282,6 @@ export default function SellPage() {
             </Select>
           </FormControl>
         </Grid>
-        {itemData.type === 'Armor' && (
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="select-gender-label">Gender</InputLabel>
-              <Select
-                labelId="select-gender-label"
-                id="select-gender"
-                value={itemData.gender}
-                label="Gender"
-                name="gender"
-                onChange={(e) => handleSelectChange(e, false)}
-              >
-                <MenuItem value="W">W</MenuItem>
-                <MenuItem value="M">M</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
         {itemData.type !== 'Other' && (
           <Grid item xs={4}>
             <FormControl fullWidth>
@@ -324,6 +306,26 @@ export default function SellPage() {
               </Select>
             </FormControl>
           </Grid>
+        )}
+        {itemData.type === 'Armor' ? (
+          <Grid item xs={4}>
+            <FormControl fullWidth>
+              <InputLabel id="select-gender-label">Gender</InputLabel>
+              <Select
+                labelId="select-gender-label"
+                id="select-gender"
+                value={itemData.gender}
+                label="Gender"
+                name="gender"
+                onChange={(e) => handleSelectChange(e, false)}
+              >
+                <MenuItem value="W">W</MenuItem>
+                <MenuItem value="M">M</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        ) : (
+          <Grid item xs={4} />
         )}
         {itemData.type !== 'Other' && itemData.type !== 'Rare' && (
           <>
