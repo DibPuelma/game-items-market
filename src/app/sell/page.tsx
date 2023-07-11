@@ -165,7 +165,7 @@ export default function SellPage() {
     const mandatoryFields = [
       'name',
     ]
-    const missingFields = mandatoryFields.filter((field) => !itemData[field])
+    const missingFields = mandatoryFields.filter((field: string) => !itemData[field as keyof typeof itemData])
     if (missingFields.length > 0) {
       alert(`Missing fields: ${missingFields.join(', ')}`)
       return
