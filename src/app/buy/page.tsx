@@ -1,5 +1,6 @@
 'use client'
 
+import { Item } from "@/components/types/Item.types"
 import { Database } from "@/lib/database.types"
 import { Button, CircularProgress, Container, Stack, Typography } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
@@ -7,23 +8,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
-interface Item {
-  created_at: string | null
-  first_attribute_name: string | null
-  first_attribute_value: number | null
-  gender: string | null
-  id: number
-  image_url: string | null
-  name: string | null
-  second_attribute_name: string | null
-  second_attribute_value: number | null
-  sub_type: string | null
-  type: string | null
-  updated_at: string | null
-  profiles: {
-    discord_id: string | null
-  } | null
-}
 export default function BuyPage() {
   const supabase = createClientComponentClient<Database>()
   const [items, setItems] = useState<Item[] | null>(null)
@@ -44,7 +28,8 @@ export default function BuyPage() {
         </Stack>
       ) : (
         <>
-          <Typography variant="h4" mt={2} mb={4}>What would you like to buy?</Typography>
+          <Typography variant="h4" mt={2}>What would you like to buy?</Typography>
+          <Typography gutterBottom mb={4}>Prices are in Olympia Coins</Typography>
           {items && items.length > 0 ? (
             <DataGrid
               loading={!items}
@@ -52,13 +37,14 @@ export default function BuyPage() {
               columns={[
                 { field: 'id', headerName: 'ID', width: 100 },
                 { field: 'name', headerName: 'Name', width: 300 },
+                { field: 'gender', headerName: 'Gender', width: 60 },
                 { field: 'first_attribute_name', headerName: 'First Attribute', width: 150 },
                 { field: 'first_attribute_value', headerName: 'Value', width: 60 },
                 { field: 'second_attribute_name', headerName: 'Second Attribute', width: 150 },
                 { field: 'second_attribute_value', headerName: 'Value', width: 60 },
-                { field: 'gender', headerName: 'Gender', width: 100 },
                 { field: 'type', headerName: 'Type', width: 150 },
                 { field: 'sub_type', headerName: 'Sub type', width: 150 },
+                { field: 'price', headerName: 'Price', width: 100 },
                 {
                   field: 'actions',
                   headerName: 'Actions',
