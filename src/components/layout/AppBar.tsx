@@ -61,7 +61,7 @@ export default function AppBar() {
     <MuiAppBar position="static">
       <Toolbar>
         <Stack width='100%' direction="row" alignItems="center" justifyContent="space-between">
-          <Stack width="10%" />
+          <Stack width="3%" />
           <Stack direction="row" alignItems="center" spacing={2}>
             <Link href="/buy">
               <Button sx={{ color: 'white' }}>
@@ -103,6 +103,11 @@ export default function AppBar() {
                   onClose={closeMenu}
                 >
                   <MenuItem>{user.email}</MenuItem>
+                  <MenuItem>
+                    <Link className="no-link-style" href="/profile">
+                      Profile
+                    </Link>
+                  </MenuItem>
                   <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
                 </Menu>
               </>
