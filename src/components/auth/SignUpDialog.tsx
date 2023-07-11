@@ -43,7 +43,6 @@ export default function SignUpDialog({ open, onClose }: { open: boolean, onClose
         setSignUpQuery({ success: true })
       }
     } catch (error) {
-      console.log('ERROR -----------------------')
       setSignUpQuery({ error: true })
     } finally {
       setSignUpQuery((oldValue) => ({ ...oldValue, loading: false }))

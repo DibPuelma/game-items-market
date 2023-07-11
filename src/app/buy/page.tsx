@@ -35,8 +35,6 @@ export default function BuyPage() {
     getItems()
   }, [supabase])
 
-  console.log(items);
-
   return (
     <Container maxWidth="xl" sx={{ pt: 4 }}>
       {!items ? (
@@ -65,7 +63,6 @@ export default function BuyPage() {
                   headerName: 'Actions',
                   width: 200,
                   renderCell: (row) => {
-                    console.log(row)
                     return (
                       <Link href={`https://discordapp.com/users/${row.row.profiles?.discord_id}`} target="_blank" rel="noopener noreferrer">
                         <Typography>Message seller</Typography>
