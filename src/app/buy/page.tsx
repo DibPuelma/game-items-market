@@ -17,8 +17,9 @@ interface Item {
   name: string | null
   second_attribute_name: string | null
   second_attribute_value: number | null
+  sub_type: string | null
+  type: string | null
   updated_at: string | null
-  user_id: string | null
   profiles: {
     discord_id: string | null
   } | null
@@ -57,7 +58,7 @@ export default function BuyPage() {
                 { field: 'second_attribute_value', headerName: 'Value', width: 60 },
                 { field: 'gender', headerName: 'Gender', width: 100 },
                 { field: 'type', headerName: 'Type', width: 150 },
-                { field: 'subType', headerName: 'Sub type', width: 150 },
+                { field: 'sub_type', headerName: 'Sub type', width: 150 },
                 {
                   field: 'actions',
                   headerName: 'Actions',
