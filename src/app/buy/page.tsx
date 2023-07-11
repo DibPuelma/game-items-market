@@ -7,9 +7,25 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
+interface Item {
+  created_at: string | null
+  first_attribute_name: string | null
+  first_attribute_value: number | null
+  gender: string | null
+  id: number
+  image_url: string | null
+  name: string | null
+  second_attribute_name: string | null
+  second_attribute_value: number | null
+  updated_at: string | null
+  user_id: string | null
+  profiles: {
+    discord_id: string | null
+  } | null
+}
 export default function BuyPage() {
   const supabase = createClientComponentClient<Database>()
-  const [items, setItems] = useState<Database['public']['Tables']['helbreath_items']['Row'][] | null>(null)
+  const [items, setItems] = useState<Item[] | null>(null)
 
   useEffect(() => {
     const getItems = async () => {
@@ -19,6 +35,7 @@ export default function BuyPage() {
     getItems()
   }, [supabase])
 
+  console.log(items);
 
   return (
     <Container maxWidth="xl" sx={{ pt: 4 }}>
@@ -50,7 +67,7 @@ export default function BuyPage() {
                   renderCell: (row) => {
                     console.log(row)
                     return (
-                      <Link href={`https://discordapp.com/users/${row.row.profiles.discord_id}`} target="_blank" rel="noopener noreferrer">
+                      <Link href={`https://discordapp.com/users/${row.row.profiles?.discord_id}`} target="_blank" rel="noopener noreferrer">
                         <Typography>Message seller</Typography>
                       </Link>
                     )
