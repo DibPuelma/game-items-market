@@ -65,19 +65,18 @@ export default function AppBar() {
           <Stack direction="row" alignItems="center" spacing={2}>
             <Link href="/buy">
               <Button sx={{ color: 'white' }}>
-                I want to buy
+                Buy
               </Button>
             </Link>
             <Link href="/sell">
               <Button sx={{ color: 'white' }}>
-                I want to sell
+                Sell
               </Button>
             </Link>
           </Stack>
           <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={user ? 0 : 2}>
             {user ? (
               <>
-                <Typography sx={{ color: 'white' }}>{user.email}</Typography>
                 <IconButton
                   size="large"
                   aria-label="account of current user"
@@ -103,6 +102,7 @@ export default function AppBar() {
                   open={Boolean(anchorEl)}
                   onClose={closeMenu}
                 >
+                  <MenuItem>{user.email}</MenuItem>
                   <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
                 </Menu>
               </>
