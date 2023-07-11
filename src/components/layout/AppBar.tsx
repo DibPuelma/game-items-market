@@ -9,6 +9,7 @@ import type { Database } from '@/lib/database.types'
 import SignUpDialog from '../auth/SignUpDialog';
 import { useRouter } from 'next/navigation';
 import SignInDialog from '../auth/SignInDialog';
+import Link from 'next/link';
 
 export default function AppBar() {
   const router = useRouter();
@@ -59,56 +60,71 @@ export default function AppBar() {
   return (
     <MuiAppBar position="static">
       <Toolbar>
-        <Stack width='100%' direction="row" alignItems="center" justifyContent="flex-end" spacing={user ? 0 : 2}>
-          {user ? (
-            <>
-              <Typography sx={{ color: 'white' }}>{user.email}</Typography>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={openMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={closeMenu}
-              >
-                <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <>
-              <Button
-                variant="text"
-                sx={{ color: 'white' }}
-                onClick={openSignInDialog}
-              >
-                Sign in
+        <Stack width='100%' direction="row" alignItems="center" justifyContent="space-between">
+          <Stack width="10%" />
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Link href="/buy">
+              <Button sx={{ color: 'white' }}>
+                I want to buy
               </Button>
-              <Button
-                variant="text"
-                sx={{ color: 'white' }}
-                onClick={openSignUpDialog}
-              >
-                Sign up
+            </Link>
+            <Link href="/sell">
+              <Button sx={{ color: 'white' }}>
+                I want to sell
               </Button>
-            </>
-          )}
+            </Link>
+          </Stack>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={user ? 0 : 2}>
+            {user ? (
+              <>
+                <Typography sx={{ color: 'white' }}>{user.email}</Typography>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={openMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={closeMenu}
+                >
+                  <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="text"
+                  sx={{ color: 'white' }}
+                  onClick={openSignInDialog}
+                >
+                  Sign in
+                </Button>
+                <Button
+                  variant="text"
+                  sx={{ color: 'white' }}
+                  onClick={openSignUpDialog}
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
+          </Stack>
         </Stack>
       </Toolbar>
       <SignUpDialog open={signUpDialogOpen} onClose={closeSignUpDialog} />
