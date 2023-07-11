@@ -11,16 +11,94 @@ import _ from "lodash";
 
 import { useEffect, useState } from "react";
 
+const WEAPON_SUB_TYPES = [
+  'Short sword',
+  'Long sword',
+  'Fencing',
+  'Axe',
+  'Hammer',
+  'Bow',
+  'Wand',
+]
+
+const WEAPON_PRIMARY_ATTRIBUTES = [
+  'Critical',
+  'Poisoning',
+  'HP Siphon',
+  'MP Siphon',
+  'Light',
+  'Strong',
+  'Crush Chance',
+  'Cast Prob',
+]
+
+const WEAPON_SECONDARY_ATTRIBUTES = [
+  'Hit Ratio',
+  'Consecutive Atk Dmg',
+  'Experience',
+  'Gold',
+  'Crush Damage',
+]
+
+const ARMOR_SUB_TYPES = [
+  'Shield',
+  'Outer body',
+  'Inner body',
+  'Headgear',
+  'Leg',
+]
+
+const ARMOR_PRIMARY_ATTRIBUTES = [
+  'Light',
+  'Endurance',
+  'Mana Convert',
+  'Critical Increase Chance',
+  'Experience',
+  'Gold',
+]
+
+const ARMOR_SECONDARY_ATTRIBUTES = [
+  'Poison Resist',
+  'Defense Ratio',
+  'Magic Resistance',
+  'HP Recovery',
+  'MP Recovery',
+  'SP Recovery',
+  'Physical Absorption',
+  'Magical Absorption',
+]
+
+const RARE_SUB_TYPES = [
+  'Stone',
+  'Gem',
+  'Necklace',
+  'Ring',
+  'Spell Manual',
+  'Armor',
+  'Shield',
+  'Short sword',
+  'Long sword',
+  'Fencing',
+  'Axe',
+  'Hammer',
+  'Bow',
+  'Wand',
+]
+
 const BASE_ITEM = {
   name: '',
   firstAttributeName: '',
-  firstAttributeValue: '',
+  firstAttributeValue: null,
   secondAttributeName: '',
-  secondAttributeValue: '',
+  secondAttributeValue: null,
   image_url: null,
   gender: '',
+  type: '',
+  subType: '',
 }
 
+
+//TODO: allow to choose type between armor and weapon and adjust attributes accordingly
 export default function SellPage() {
   const supabase = createClientComponentClient<Database>()
 
@@ -51,7 +129,16 @@ export default function SellPage() {
     })
   }
 
-  const handleSelectChange = (event: SelectChangeEvent) => {
+  const handleSelectChange = (event: SelectChangeEvent, clearOther: boolean = false) => {
+    if (clearOther) {
+      setItemData({
+        ...BASE_ITEM,
+        name: itemData.name,
+        [event.target.name]: event.target.value,
+      });
+      return;
+    }
+
     setItemData({
       ...itemData,
       [event.target.name]: event.target.value
@@ -75,14 +162,8 @@ export default function SellPage() {
   }
 
   const handleCreateItem = async () => {
-    console.log('create item')
     const mandatoryFields = [
       'name',
-      'firstAttributeName',
-      'firstAttributeValue',
-      'secondAttributeName',
-      'secondAttributeValue',
-      'gender',
     ]
     const missingFields = mandatoryFields.filter((field) => !itemData[field])
     if (missingFields.length > 0) {
@@ -157,7 +238,7 @@ export default function SellPage() {
             </Typography>
           )}
         </Grid>
-        <Grid item xs={10} sm={6}>
+        <Grid item xs={12}>
           <TextField
             fullWidth
             label="Item name"
@@ -167,96 +248,136 @@ export default function SellPage() {
             onChange={handleTextChange}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4}>
           <FormControl fullWidth>
-            <InputLabel id="select-gender-label">Gender</InputLabel>
+            <InputLabel id="select-type-label">Type</InputLabel>
             <Select
-              labelId="select-gender-label"
-              id="select-gender"
-              value={itemData.gender}
-              label="Gender"
-              name="gender"
-              onChange={handleSelectChange}
+              labelId="select-type-label"
+              id="select-type"
+              value={itemData.type}
+              label="Type"
+              name="type"
+              onChange={(e) => handleSelectChange(e, true)}
             >
-              <MenuItem value="W">W</MenuItem>
-              <MenuItem value="M">M</MenuItem>
+              <MenuItem value="Weapon">Weapon</MenuItem>
+              <MenuItem value="Armor">Armor</MenuItem>
+              <MenuItem value="Rare">Rare</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item sm={4} />
-        <Grid item xs={6} sm={4}>
-          <FormControl fullWidth>
-            <InputLabel id="first-attribute-select-label">First attribute</InputLabel>
-            <Select
-              labelId="first-attribute-select-label"
-              id="select-first-attribute"
-              value={itemData.firstAttributeName}
-              label="First attribute"
-              name="firstAttributeName"
-              onChange={handleSelectChange}
-            >
-              <MenuItem value="Poisoning (PD)">Poisoning (PD)</MenuItem>
-              <MenuItem value="Light">Light</MenuItem>
-              <MenuItem value="Endurance">Endurance</MenuItem>
-              <MenuItem value="Casting Probablity (CP)">Casting Probablity (CP)</MenuItem>
-              <MenuItem value="Mana Conversion (MCON)">Mana Conversion (MCON)</MenuItem>
-              <MenuItem value="Experience (EXP)">Experience (EXP)</MenuItem>
-              <MenuItem value="Gold">Gold</MenuItem>
-              <MenuItem value="Crush Chance (CC)">Crush Chance (CC)</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={6} sm={2}>
-          <TextField
-            fullWidth
-            type="number"
-            label="Value"
-            variant="outlined"
-            value={itemData.firstAttributeValue}
-            name="firstAttributeValue"
-            onChange={handleTextChange}
-          />
-        </Grid>
-        <Grid item xs={6} sm={4}>
-          <FormControl fullWidth>
-            <InputLabel id="second-attribute-select-label">First attribute</InputLabel>
-            <Select
-              labelId="second-attribute-select-label"
-              id="select-second-attribute"
-              value={itemData.secondAttributeName}
-              label="First attribute"
-              name="secondAttributeName"
-              onChange={handleSelectChange}
-            >
-              <MenuItem value="Poison Resistance (PR)">Poison Resistance (PR)</MenuItem>
-              <MenuItem value="Hit Ratio (HR)">Hit Ratio (HR)</MenuItem>
-              <MenuItem value="Defense Ratio (DR)">Defense Ratio (DR)</MenuItem>
-              <MenuItem value="HP Recovery (HP)">HP Recovery (HP)</MenuItem>
-              <MenuItem value="SP Recovery (SP)">SP Recovery (SP)</MenuItem>
-              <MenuItem value="MP Recovery (MP)">MP Recovery (MP)</MenuItem>
-              <MenuItem value="Magic Resistance (MR)">Magic Resistance (MR)</MenuItem>
-              <MenuItem value="Physical Absorption (PA)">Physical Absorption (PA)</MenuItem>
-              <MenuItem value="Magical Absorption (MA)">Magical Absorption (MA)</MenuItem>
-              <MenuItem value="Experience (EXP)">Experience (EXP)</MenuItem>
-              <MenuItem value="Gold">Gold</MenuItem>
-              <MenuItem value="Crush Damage (CD)">Crush Damage (CD)</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={6} sm={2}>
-          <TextField
-            fullWidth
-            type="number"
-            label="Value"
-            variant="outlined"
-            value={itemData.secondAttributeValue}
-            name="secondAttributeValue"
-            onChange={handleTextChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
+        {itemData.type === 'Armor' && (
+          <Grid item xs={4}>
+            <FormControl fullWidth>
+              <InputLabel id="select-gender-label">Gender</InputLabel>
+              <Select
+                labelId="select-gender-label"
+                id="select-gender"
+                value={itemData.gender}
+                label="Gender"
+                name="gender"
+                onChange={(e) => handleSelectChange(e, false)}
+              >
+                <MenuItem value="W">W</MenuItem>
+                <MenuItem value="M">M</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+        {itemData.type !== 'Other' && (
+          <Grid item xs={4}>
+            <FormControl fullWidth>
+              <InputLabel id="select-sub-type-label">Sub type</InputLabel>
+              <Select
+                labelId="select-sub-type-label"
+                id="select-sub-type"
+                value={itemData.subType}
+                label="Sub type"
+                name="subType"
+                onChange={(e) => handleSelectChange(e, false)}
+              >
+                {itemData.type === 'Rare' && RARE_SUB_TYPES.map((subType) => (
+                  <MenuItem key={subType} value={subType}>{subType}</MenuItem>
+                ))}
+                {itemData.type === 'Weapon' && WEAPON_SUB_TYPES.map((subType) => (
+                  <MenuItem key={subType} value={subType}>{subType}</MenuItem>
+                ))}
+                {itemData.type === 'Armor' && ARMOR_SUB_TYPES.map((subType) => (
+                  <MenuItem key={subType} value={subType}>{subType}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+        {itemData.type !== 'Other' && itemData.type !== 'Rare' && (
+          <>
+            <Grid item xs={6} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel id="first-attribute-select-label">First attribute</InputLabel>
+                <Select
+                  labelId="first-attribute-select-label"
+                  id="select-first-attribute"
+                  value={itemData.firstAttributeName}
+                  label="First attribute"
+                  name="firstAttributeName"
+                  onChange={(e) => handleSelectChange(e, false)}
+                >
+                  {itemData.type === 'Weapon' && WEAPON_PRIMARY_ATTRIBUTES.map((attribute) => (
+                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                  ))}
+                  {itemData.type === 'Armor' && ARMOR_PRIMARY_ATTRIBUTES.map((attribute) => (
+                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6} sm={2}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Value"
+                variant="outlined"
+                value={itemData.firstAttributeValue}
+                name="firstAttributeValue"
+                onChange={handleTextChange}
+              />
+            </Grid>
+            <Grid item xs={6} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel id="second-attribute-select-label">Second attribute</InputLabel>
+                <Select
+                  labelId="second-attribute-select-label"
+                  id="select-second-attribute"
+                  value={itemData.secondAttributeName}
+                  label="Second attribute"
+                  name="secondAttributeName"
+                  onChange={(e) => handleSelectChange(e, false)}
+                >
+                  {itemData.type === 'Weapon' && WEAPON_SECONDARY_ATTRIBUTES.map((attribute) => (
+                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                  ))}
+                  {itemData.type === 'Armor' && ARMOR_SECONDARY_ATTRIBUTES.map((attribute) => (
+                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6} sm={2}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Value"
+                variant="outlined"
+                value={itemData.secondAttributeValue}
+                name="secondAttributeValue"
+                onChange={handleTextChange}
+              />
+            </Grid>
+          </>
+        )}
+        {/* <Grid item xs={12}>
           <Typography variant="h6">Upload an image</Typography>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <LoadingButton
             loading={createResolved.loading}
@@ -268,6 +389,6 @@ export default function SellPage() {
           </LoadingButton>
         </Grid>
       </Grid>
-    </Container>
+    </Container >
   )
 }
