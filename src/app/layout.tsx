@@ -5,6 +5,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import AppBar from '@/components/layout/AppBar';
+import ThemeProvider from '@/components/theme/ThemeProvider';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppBar />
-        {children}
+        <ThemeProvider>
+          <AppBar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
