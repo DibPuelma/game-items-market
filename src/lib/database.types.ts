@@ -18,6 +18,7 @@ export interface Database {
           id: number
           image_url: string | null
           name: string | null
+          price: number | null
           second_attribute_name: string | null
           second_attribute_value: number | null
           sub_type: string | null
@@ -33,6 +34,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           name?: string | null
+          price?: number | null
           second_attribute_name?: string | null
           second_attribute_value?: number | null
           sub_type?: string | null
@@ -48,6 +50,7 @@ export interface Database {
           id?: number
           image_url?: string | null
           name?: string | null
+          price?: number | null
           second_attribute_name?: string | null
           second_attribute_value?: number | null
           sub_type?: string | null

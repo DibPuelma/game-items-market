@@ -4,7 +4,7 @@ import { Item } from "@/components/types/Item.types";
 import { useEffect, useState } from "react";
 import useSupabase from "../hooks/useSupabase";
 import useSession from "../hooks/useSession";
-import { Button, Container, Typography } from "@mui/material";
+import { Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Link from "next/link";
 import { LoadingButton } from "@mui/lab";
@@ -15,13 +15,18 @@ type ObjectBooleanValueStringKey = {
 export default function MyItems() {
   const supabase = useSupabase()
   const { user } = useSession()
+  const [loading, setLoading] = useState<boolean>(true)
   const [deleteLoading, setDeleteLoading] = useState<ObjectBooleanValueStringKey>({})
   const [items, setItems] = useState<Item[] | null>([])
+  const [itemIdToEdit, setItemIdToEdit] = useState<number | null>(null)
+  const [newPrice, setNewPrice] = useState<number | null>(null)
+  const [editLoading, setEditLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const getItems = async () => {
       const { data: items } = await supabase.from('helbreath_items').select('*, profiles(discord_id)').eq('user_id', user.id)
       setItems(items)
+      setLoading(false)
     }
     if (!user) return;
     getItems()
@@ -33,6 +38,30 @@ export default function MyItems() {
     setDeleteLoading({ [id]: false });
     if (error) return
     setItems(items?.filter(item => item.id !== id) || [])
+  }
+
+  const openEditPriceDialog = (id: number) => {
+    console.log('wkemfwkefm')
+    setItemIdToEdit(id);
+  }
+
+  const handleEditItemPrice = async () => {
+    setEditLoading(true)
+    const { error } = await supabase.from('helbreath_items').update({ price: newPrice }).eq('id', itemIdToEdit)
+    setEditLoading(false)
+    if (error) return
+    setItems(items?.map(item => item.id === itemIdToEdit ? { ...item, price: newPrice } : item) || [])
+    setItemIdToEdit(null)
+  }
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ pt: 4 }}>
+        <Stack width="100%" alignItems="center">
+          <CircularProgress />
+        </Stack>
+      </Container>
+    )
   }
 
   return (
@@ -58,14 +87,23 @@ export default function MyItems() {
               headerName: 'Actions',
               width: 200,
               renderCell: (row) => (
-                <LoadingButton
-                  variant="contained"
-                  color="error"
-                  onClick={handleDeleteItem(row.row.id)}
-                  loading={deleteLoading[row.row.id]}
-                >
-                  Delete
-                </LoadingButton>
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => openEditPriceDialog(row.row.id)}
+                  >
+                    Edit
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    color="error"
+                    onClick={handleDeleteItem(row.row.id)}
+                    loading={deleteLoading[row.row.id]}
+                  >
+                    Delete
+                  </LoadingButton>
+                </Stack>
               )
             },
           ]}
@@ -78,6 +116,31 @@ export default function MyItems() {
       ) : (
         <Typography variant="h5">You don&apos;t have items to sell. Click <Link href="/sell">here</Link> to post your first item.</Typography>
       )}
+      <Dialog
+        open={Boolean(itemIdToEdit)}
+        onClose={() => setItemIdToEdit(null)}
+      >
+        <DialogTitle>Edit price</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="New price"
+            type="number"
+            value={newPrice}
+            onChange={(e) => setNewPrice(Number(e.target.value))}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setItemIdToEdit(null)}>Cancel</Button>
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            onClick={handleEditItemPrice}
+            loading={editLoading}
+          >
+            Save
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }
