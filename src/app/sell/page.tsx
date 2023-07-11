@@ -11,6 +11,27 @@ import _ from "lodash";
 
 import { useEffect, useState } from "react";
 
+const SHARD_FRAGMENT_ATTRIBUTES = [
+  'Poisoning',
+  'Light',
+  'Endurance',
+  'Casting Probablity',
+  'Mana Conversion',
+  'Experience',
+  'Gold',
+  'Crush Chance',
+  'Poison Resistance',
+  'Hit Ratio',
+  'Defense Ratio',
+  'HP Recovery',
+  'SP Recovery',
+  'MP Recovery',
+  'Magic Resistance',
+  'Physical Absorption',
+  'Magical Absorption',
+  'Crush Damage',
+]
+
 const WEAPON_SUB_TYPES = [
   'Short sword',
   'Long sword',
@@ -277,12 +298,13 @@ export default function SellPage() {
             >
               <MenuItem value="Weapon">Weapon</MenuItem>
               <MenuItem value="Armor">Armor</MenuItem>
+              <MenuItem value="Shard / Fragment">Shard / Fragment</MenuItem>
               <MenuItem value="Rare">Rare</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        {itemData.type !== 'Other' && (
+        {itemData.type !== 'Other' && itemData.type !== 'Shard / Fragment' && (
           <Grid item xs={4}>
             <FormControl fullWidth>
               <InputLabel id="select-sub-type-label">Sub type</InputLabel>
@@ -325,7 +347,7 @@ export default function SellPage() {
             </FormControl>
           </Grid>
         ) : (
-          <Grid item xs={4} />
+          <Grid item xs={4} display={itemData.type === 'Shard / Fragment' ? 'none' : 'block'} />
         )}
         {itemData.type !== 'Other' && itemData.type !== 'Rare' && (
           <>
@@ -340,6 +362,9 @@ export default function SellPage() {
                   name="firstAttributeName"
                   onChange={(e) => handleSelectChange(e, false)}
                 >
+                  {itemData.type === 'Shard / Fragment' && SHARD_FRAGMENT_ATTRIBUTES.map((attribute) => (
+                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                  ))}
                   {itemData.type === 'Weapon' && WEAPON_PRIMARY_ATTRIBUTES.map((attribute) => (
                     <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
                   ))}
@@ -360,37 +385,41 @@ export default function SellPage() {
                 onChange={handleTextChange}
               />
             </Grid>
-            <Grid item xs={6} sm={4}>
-              <FormControl fullWidth>
-                <InputLabel id="second-attribute-select-label">Second attribute</InputLabel>
-                <Select
-                  labelId="second-attribute-select-label"
-                  id="select-second-attribute"
-                  value={itemData.secondAttributeName}
-                  label="Second attribute"
-                  name="secondAttributeName"
-                  onChange={(e) => handleSelectChange(e, false)}
-                >
-                  {itemData.type === 'Weapon' && WEAPON_SECONDARY_ATTRIBUTES.map((attribute) => (
-                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
-                  ))}
-                  {itemData.type === 'Armor' && ARMOR_SECONDARY_ATTRIBUTES.map((attribute) => (
-                    <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={6} sm={2}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Value"
-                variant="outlined"
-                value={itemData.secondAttributeValue}
-                name="secondAttributeValue"
-                onChange={handleTextChange}
-              />
-            </Grid>
+            {itemData.type !== 'Shard / Fragment' && (
+              <>
+                <Grid item xs={6} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="second-attribute-select-label">Second attribute</InputLabel>
+                    <Select
+                      labelId="second-attribute-select-label"
+                      id="select-second-attribute"
+                      value={itemData.secondAttributeName}
+                      label="Second attribute"
+                      name="secondAttributeName"
+                      onChange={(e) => handleSelectChange(e, false)}
+                    >
+                      {itemData.type === 'Weapon' && WEAPON_SECONDARY_ATTRIBUTES.map((attribute) => (
+                        <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                      ))}
+                      {itemData.type === 'Armor' && ARMOR_SECONDARY_ATTRIBUTES.map((attribute) => (
+                        <MenuItem key={attribute} value={attribute}>{attribute}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6} sm={2}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    label="Value"
+                    variant="outlined"
+                    value={itemData.secondAttributeValue}
+                    name="secondAttributeValue"
+                    onChange={handleTextChange}
+                  />
+                </Grid>
+              </>
+            )}
           </>
         )}
         {/* <Grid item xs={12}>
